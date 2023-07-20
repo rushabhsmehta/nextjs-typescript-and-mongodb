@@ -3,29 +3,30 @@ import Link from 'next/link'
 import useFetch, { revalidate } from 'http-react'
 import Icon from 'bs-icon'
 
-import { IPost } from 'src/Models/Post'
+import { ILocation } from 'src/Models/Location'
 import Header from 'components/Header'
 
-function confirmPostDelete(id: any) {
-  const confirmation = confirm('Do you want to remove this post?')
+function confirmLocationDelete(id: any) {
+  const confirmation = confirm('Do you want to remove this Location ?')
   if (confirmation) {
     revalidate(id)
   }
+  
 }
 
-function Post(props: Partial<IPost>) {
+function Location(props: Partial<ILocation>) {
   const fetchID = {
-    post: props
+    location : props
   }
 
-  useFetch('/posts', {
+  useFetch('/locations', {
     id: fetchID,
     method: 'DELETE',
     query: {
       id: props._id
     },
     onResolve() {
-      revalidate('GET /posts')
+      revalidate('GET /locations')
     }
   })
 
@@ -35,17 +36,19 @@ function Post(props: Partial<IPost>) {
         transition: '0.12s'
       }}
       className='card p-4 relative break-words rounded-lg hover:border-neutral-400 card-bordered m-4'
-      key={`post-${props._id}`}
+      key={`location-${props._id}`}
     >
       <button
         className='btn btn-ghost font-semibold absolute top-1 right-1 cursor-pointer'
-        onClick={() => confirmPostDelete(fetchID)}
+        onClick={() => confirmLocationDelete(fetchID)}
       >
         <Icon name='trash' className='text-xl' />
       </button>
-      <b className='my-2'>{props.title}</b>
+      <b className='my-2'>{props.name}</b>
       <br />
-      <p className='my-4'>{props.content}</p>
+      <p className='my-4'>{props.description}</p>
+      <br />
+      <p className='my-4'>{props.tag}</p>
       <br />
       <b className='my-2'>{props.imgSource}</b>
       <br />
@@ -53,31 +56,34 @@ function Post(props: Partial<IPost>) {
   )
 }
 
-export default function Posts() {
-  const { data, loadingFirst, error } = useFetch<IPost[]>('/posts', {
+export default function Locations() {
+  const { data, loadingFirst, error } = useFetch<ILocation []>('/locations', {
     default: []
   })
 
   if (loadingFirst)
-    return <p className='text-2xl font-semibold py-4'>Loading posts...</p>
+    return <p className='text-2xl font-semibold py-4'>Loading Locations ...</p>
 
   if (error)
-    return <p className='text-2xl text-red-400 py-4'>Failed to fetch posts</p>
+  {
+    console.log(error)
+    return <p className='text-2xl text-red-400 py-4'>Failed to fetch locations</p>
+  }
 
   return (
     <div>
-      <Header>Your posts ({data.length})</Header>
+      <Header>Your Locations ({data.length})</Header>
       <div className='flex space-x-4'>
         <Link href='/' className='btn gap-x-2 btn-ghost'>
           <Icon name='arrow-left' className='text-xl' /> Back
         </Link>
-        <Link href='/posts/create' className='btn gap-x-2'>
-          Add one post <Icon name='plus' className='text-xl' />
+        <Link href='/locations/create' className='btn gap-x-2'>
+          Add one Location <Icon name='plus' className='text-xl' />
         </Link>
       </div>
       <div className='py-4  grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 rounded-md'>
-        {data.map(post => (
-          <Post {...post} key={`post-${post._id}`} />
+        {data.map(location => (
+          <Location {...location} key={`location-${location._id}`} />
         ))}
       </div>
     </div>

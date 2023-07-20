@@ -10,30 +10,31 @@ import useFetch, { revalidate } from 'http-react'
 import Header from 'components/Header'
 import Input from 'components/Input'
 
-function savePost() {
-  revalidate('POST /posts')
+function saveLocation() {
+  revalidate('POST /locations')
 }
 
 export default function Create() {
   const router = useRouter()
 
-  const [post, setPost] = useObject({
-    title: '',
-    content: '',
+  const [location, setLocation] = useObject({
+    name : '',
+    description : '',
+    tag : '',
     imgSource : ''
   })
 
-  const newPostDate = useMemo(() => Date.now(), [post])
+  const newLocationDate = useMemo(() => Date.now(), [location])
 
-  const newPost = {
-    ...post,
-    date: newPostDate
+  const newLocation = {
+    ...location,
+    date: newLocationDate
   }
 
   // This is not automatic, this is a mutation
-  useFetch('/posts', {
+  useFetch('/locations', {
     method: 'POST',
-    body: { ...newPost, _id: undefined },
+    body: { ...newLocation, _id: undefined },
     onResolve() {
       router.back()
     }
@@ -41,52 +42,63 @@ export default function Create() {
 
   return (
     <div>
-      <Link href='/posts' className='btn gap-x-2 btn-ghost'>
+      <Link href='/locations' className='btn gap-x-2 btn-ghost'>
         <Icon name='arrow-left' className='text-xl' /> Back
       </Link>
-      <Header>Add post</Header>
+      <Header>Add Locations</Header>
       <div className='flex flex-wrap w-full md:w-96 items-center justify-center space-y-2'>
         <div className='w-full'>
           <Input
-            value={post.title}
-            name='title'
+            value={location.name}
+            name='name'
             onChange={e =>
-              setPost.write({
-                title: e.target.value
+              setLocation.write({
+                name : e.target.value
               })
             }
-            placeholder='Title'
+            placeholder='Location Name'
           />
         </div>
         <div className='w-full'>
           <textarea
-            placeholder='Content'
+            placeholder='Description'
             className='textarea textarea-bordered h-32 resize-none w-full'
-            name='content'
+            name='description'
             onChange={e =>
-              setPost.write({
-                content: e.target.value
+              setLocation.write({
+                description: e.target.value
               })
             }
           ></textarea>
         </div>
-
         <div className='w-full'>
           <Input
-            value = {post.imgSource}
+            value={location.tag}
+            name='tag'
+            onChange={e =>
+              setLocation.write({
+                tag : e.target.value
+              })
+            }
+            placeholder='Location Tag'
+          />
+        </div>
+        <div className='w-full'>
+          <Input
+            value = {location.imgSource}
             name='imgSource'
             onChange={e =>
-              setPost.write({
+              setLocation.write({
                 imgSource: e.target.value
               })
             }
-            placeholder='Image Source'
+            placeholder='Source of Location Image'
 
           />
         </div>
 
         <div className='w-full text-center'>
-          <button onClick={savePost} className='btn gap-x-2'>
+          <button onClick={saveLocation} className='btn gap-x-2'>
             <span>Save</span>
             <Icon name='disc' className='text-xl' />
           </button>

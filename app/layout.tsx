@@ -12,11 +12,12 @@ function MainLayout({ children }) {
           <meta name='description' content='A Starter with Next.js' />
         </head>
         <body>
-          <div className='p-8'>{children}</div>
+          
+          <div className='p-2'>{children}</div>
           <Link
             href='https://github.com/danybeltran/nextjs-typescript-and-mongodb'
             target='_blank'
-            className='fixed bottom-2 left-2 btn btn-sm gap-x-2'
+            className='fixed bottom-10 right-10 btn btn-sm gap-x-2'
           >
             <Icon name='github' /> <span>Github</span>
           </Link>
